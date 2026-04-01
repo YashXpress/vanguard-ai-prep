@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Vanguard AI Prep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <script>
+        const theme = localStorage.getItem('vanguard_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">V</span> Vanguard AI
+            </a>
+            <div class="flex-center" style="gap: 2rem;">
+                <nav class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="features.html">Features</a>
+                    <a href="about.html" class="active">About</a>
+                    <a href="feedback.html">Feedback</a>
+                </nav>
+                <div class="flex-center" style="gap: 1rem;">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">☀️</button>
+                    <button class="menu-toggle" aria-label="Toggle menu" id="mobile-menu-btn">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-mobile" id="mobile-nav">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="about.html" class="active">About</a>
+        <a href="feedback.html">Feedback</a>
+    </nav>
+
+    <main class="min-h-screen flex-center" style="padding-top: var(--space-xl); padding-bottom: var(--space-xl);">
+        <div class="hero-glow"></div>
+        <div class="container max-w-lg mx-auto fade-in-section">
+            <h1 class="hero-title text-center text-gradient" style="margin-bottom: var(--space-xs);">About Vanguard</h1>
+            <p class="hero-subtitle text-center">Mission and Target Demographics</p>
+
+            <div class="card my-lg card-hover" style="margin-top: var(--space-md);">
+                <h2>Our Mission</h2>
+                <p class="text-muted mb-sm text-sm">At Vanguard AI Prep, our mission is to democratize high-level defence exam preparation. By leveraging cutting-edge deterministic AI models, we eliminate the need for exorbitant coaching fees and provide a standardized, highly rigorous practice environment accessible to every ambitious aspirant.</p>
+
+                <div class="divider"></div>
+
+                <h2 class="mt-md">Target Authorization</h2>
+                <ul class="text-muted text-sm" style="list-style-position: outside; padding-left: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem;">
+                    <li><strong>NDA (National Defence Academy):</strong> Foundational preparation and Services Selection Board (SSB) interviews module.</li>
+                    <li><strong>CDS (Combined Defence Services):</strong> High-resolution current affairs, English, and General Knowledge simulation.</li>
+                    <li><strong>AFCAT (Air Force Common Admission Test):</strong> Precision practice limits for reasoning and deterministic modeling.</li>
+                    <li><strong>CAPF (Central Armed Police Forces):</strong> Specialized subjective mock testing and structured evaluation loops.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-lg">
+        <div class="container flex-between" style="flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+                <a href="index.html" class="logo" style="margin-bottom: 0.5rem;">
+                    <span class="logo-icon">V</span> Vanguard AI
+                </a>
+                <p class="text-muted text-sm border-0">Built for Elite Defence Aspirants &copy; 2026</p>
+            </div>
+            <div class="flex-center" style="gap: 1.5rem;">
+                <a href="features.html" class="text-muted text-sm hover-underline">Features</a>
+                <a href="about.html" class="text-muted text-sm hover-underline">About</a>
+                <a href="feedback.html" class="text-muted text-sm hover-underline">Contact</a>
+            </div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+</body>
+</html>

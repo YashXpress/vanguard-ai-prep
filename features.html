@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard AI Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        const theme = localStorage.getItem('vanguard_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <div id="toast-container" class="toast-container"></div>
+    
+    <div class="system-status-bar" id="sys-status-bar">
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            AI CORE: ONLINE
+        </div>
+        <div id="top-bar-mode">ANALYSIS MODE: <span style="color: #fff">STANDBY</span></div>
+        <div>SYS_LATENCY: <span style="color:var(--color-success)">1.2MS</span></div>
+    </div>
+
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">V</span> Vanguard AI
+            </a>
+            <div class="flex-center" style="gap: 2rem;">
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">☀️</button>
+                <div class="flex-center" style="gap: 0.5rem; border-left: 1px solid var(--color-border); padding-left: 1rem;">
+                    <button onclick="window.VanguardAuth.logout()" class="btn btn-outline btn-sm">Disconnect</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="min-h-screen" style="padding-bottom: var(--space-xl);">
+        <div class="container" style="padding-top: var(--space-md);">
+            <div id="user-welcome" class="user-welcome-section fade-in-section is-visible hidden">
+            </div>
+
+            <div class="dashboard-layout fade-in-section" style="transition-delay: 100ms;">
+                <aside class="dashboard-sidebar">
+                    <h5 class="text-muted text-sm mb-xs" style="text-transform: uppercase; letter-spacing: 1px; padding-left: var(--space-sm);">Core Modules</h5>
+                    <div class="module-item active" data-target="module-ca">
+                        <div class="module-title"><span class="icon-wrapper">📰</span> Current Affairs</div>
+                    </div>
+                    <div class="module-item" data-target="module-mcq">
+                        <div class="module-title"><span class="icon-wrapper">🎯</span> MCQ Generator</div>
+                    </div>
+                    <div class="module-item" data-target="module-ssb">
+                        <div class="module-title"><span class="icon-wrapper">🗣️</span> SSB Simulation</div>
+                    </div>
+                    <div class="module-item" data-target="module-plan">
+                        <div class="module-title"><span class="icon-wrapper">📅</span> Study Planner</div>
+                    </div>
+                </aside>
+
+                <div class="dashboard-panel">
+                    
+                    <!-- CA Panel -->
+                    <div class="panel-wrapper" id="module-ca">
+                        <div class="panel-header">
+                            <h3 style="margin: 0;">Current Affairs <span class="badge badge-beta">Stream</span></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel-input-side">
+                                <form id="ca-form">
+                                    <div class="form-group">
+                                        <label class="form-label" for="ca-date">Target Date</label>
+                                        <input type="date" id="ca-date" class="form-control" required>
+                                    </div>
+                                    <div class="form-group mb-md">
+                                        <label class="form-label" for="ca-depth">Extraction Depth</label>
+                                        <select id="ca-depth" class="form-control">
+                                            <option value="summary">Summary</option>
+                                            <option value="deep">In-Depth Analysis</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" id="ca-btn" class="btn btn-primary" style="width: 100%;">Execute Query</button>
+                                </form>
+                            </div>
+                            <div class="panel-output-side" id="ca-output-container">
+                                <label class="form-label text-accent font-weight-600">Console Output</label>
+                                <div id="ca-output" class="output-area empty"><span class="text-muted">Awaiting parameters...</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MCQ Panel -->
+                    <div class="panel-wrapper hidden" id="module-mcq">
+                        <div class="panel-header">
+                            <h3 style="margin: 0;">MCQ Generator <span class="badge badge-beta">Engine</span></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel-input-side">
+                                <form id="mcq-form">
+                                    <div class="form-group">
+                                        <label class="form-label" for="mcq-topic">Topic / Subject</label>
+                                        <input type="text" id="mcq-topic" class="form-control" placeholder="e.g. Modern Indian History" required>
+                                    </div>
+                                    <div class="form-group mb-sm">
+                                        <label class="form-label" for="mcq-difficulty">Difficulty</label>
+                                        <select id="mcq-difficulty" class="form-control">
+                                            <option value="Standard">Standard (NDA)</option>
+                                            <option value="Hard">Advanced (CDS/AFCAT)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-md">
+                                        <label class="form-label" for="mcq-count">Question Count</label>
+                                        <input type="number" id="mcq-count" class="form-control" value="5" min="1" max="50" required>
+                                    </div>
+                                    <button type="submit" id="mcq-btn" class="btn btn-primary" style="width: 100%;">Synthesize Database</button>
+                                </form>
+                            </div>
+                            <div class="panel-output-side" id="mcq-output-container">
+                                <label class="form-label text-accent font-weight-600">Console Output</label>
+                                <div id="mcq-output" class="output-area empty"><span class="text-muted">Awaiting parameters...</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SSB Panel -->
+                    <div class="panel-wrapper hidden" id="module-ssb">
+                        <div class="panel-header">
+                            <h3 style="margin: 0; display:flex; align-items: center; gap: 0.5rem;">SSB Simulator <span class="badge badge-beta">IO Model</span></h3>
+                            <div id="ssb-controls" style="display: flex; gap: 10px; align-items: center;">
+                                <select id="ssb-type" class="form-control" style="padding: 0.4rem; height: auto;">
+                                    <option value="PI">Personal Interview</option>
+                                    <option value="SRT">Situation Reaction Test</option>
+                                    <option value="WAT">Word Association Test</option>
+                                </select>
+                                <button class="btn btn-primary btn-sm" id="ssb-start-btn">Connect Model</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel-input-side">
+                                <form id="ssb-form" class="hidden">
+                                    <div id="ssb-thinking-mode" class="card mb-sm hidden" style="background: rgba(0, 119, 255, 0.05); padding: 1rem; border-color: var(--color-accent);">
+                                        <h4 class="text-accent text-sm mb-xs" style="text-transform: uppercase;">Pre-Flight Briefing</h4>
+                                        <p class="text-sm" style="margin-bottom: 6px;"><strong>Tests:</strong> <span id="ssb-mode-tests" class="text-muted"></span></p>
+                                        <p class="text-sm" style="margin-bottom: 6px;"><strong>Approach:</strong> <span id="ssb-mode-approach" class="text-muted"></span></p>
+                                        <p class="text-sm"><strong>Avoid:</strong> <span id="ssb-mode-avoid" class="text-error" style="color: var(--color-error);"></span></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" style="color: var(--color-warning);">Current Directive / Scenario</label>
+                                        <div id="ssb-question-display" class="card mb-sm" style="background: var(--color-bg); font-weight: 600; font-size: 1rem; border-color: rgba(245, 158, 11, 0.5); word-wrap: break-word;"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="ssb-answer">Candidate Response</label>
+                                        <textarea id="ssb-answer" class="form-control" rows="4" placeholder="Speak your mind clearly..." required></textarea>
+                                    </div>
+                                    <button type="submit" id="ssb-submit-btn" class="btn btn-outline" style="width: 100%; border-color: var(--color-warning); color: var(--color-warning);">Submit Response</button>
+                                </form>
+                            </div>
+                            <div class="panel-output-side" id="ssb-output-container">
+                                <label class="form-label text-accent font-weight-600">Console Output</label>
+                                <div id="ssb-output" class="output-area empty"><span class="text-muted">Awaiting connection...</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Plan Panel -->
+                    <div class="panel-wrapper hidden" id="module-plan">
+                        <div class="panel-header">
+                            <h3 style="margin: 0;">Study Planner <span class="badge badge-beta">Algorithm</span></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel-input-side">
+                                <form id="plan-form">
+                                    <div class="grid grid-2" style="gap: var(--space-sm);">
+                                        <div class="form-group">
+                                            <label class="form-label" for="plan-exam">Target Evaluation</label>
+                                            <select id="plan-exam" class="form-control">
+                                                <option value="NDA">NDA</option>
+                                                <option value="CDS">CDS</option>
+                                                <option value="AFCAT">AFCAT</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="plan-hours">Hours / Day</label>
+                                            <input type="number" id="plan-hours" class="form-control" value="4" min="1" max="16" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-sm mb-md">
+                                        <label class="form-label" for="plan-weak">Weak Subjects</label>
+                                        <input type="text" id="plan-weak" class="form-control" placeholder="e.g. Mathematics, History" required>
+                                    </div>
+                                    <button type="submit" id="plan-btn" class="btn btn-primary" style="width: 100%;">Compile Strategy</button>
+                                </form>
+                            </div>
+                            <div class="panel-output-side" id="plan-output-container">
+                                <label class="form-label text-accent font-weight-600">Console Output</label>
+                                <div id="plan-output" class="output-area empty"><span class="text-muted">Awaiting parameters...</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/features.js"></script>
+</body>
+</html>

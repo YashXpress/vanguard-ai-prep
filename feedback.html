@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Vanguard AI Prep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <script>
+        const theme = localStorage.getItem('vanguard_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">V</span> Vanguard AI
+            </a>
+            <div class="flex-center" style="gap: 2rem;">
+                <nav class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="features.html">Features</a>
+                    <a href="about.html">About</a>
+                    <a href="feedback.html" class="active">Feedback</a>
+                </nav>
+                <div class="flex-center" style="gap: 1rem;">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">☀️</button>
+                    <button class="menu-toggle" aria-label="Toggle menu" id="mobile-menu-btn">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-mobile" id="mobile-nav">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="about.html">About</a>
+        <a href="feedback.html" class="active">Feedback</a>
+    </nav>
+
+    <main class="min-h-screen flex-center" style="padding-top: var(--space-xl); padding-bottom: var(--space-xl);">
+        <div class="hero-glow"></div>
+        <div class="container max-w-lg mx-auto fade-in-section">
+            <div class="text-center mb-md">
+                <h1 class="hero-title text-gradient" style="margin-bottom: var(--space-xs);">System Feedback</h1>
+                <p class="hero-subtitle">Help us dial in the models for better precision.</p>
+            </div>
+
+            <div class="card card-hover" style="box-shadow: var(--shadow-glow);">
+                <div id="feedback-success" class="hidden fade-in-section" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--color-success); border-radius: var(--radius-sm); padding: var(--space-sm); color: var(--color-success); text-align: center; margin-bottom: var(--space-md); font-weight: 500;">
+                    Transmission Successful. Data ingested.
+                </div>
+                <form id="feedback-form">
+                    <div class="form-group" style="margin-bottom: var(--space-sm);">
+                        <label class="form-label" for="fb-name">Cadet / Candidate Name</label>
+                        <input type="text" id="fb-name" class="form-control" placeholder="Vikram Singh" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: var(--space-sm);">
+                        <label class="form-label" for="fb-email">Communications Protocol (Email)</label>
+                        <input type="email" id="fb-email" class="form-control" placeholder="vikram@vanguard.io" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: var(--space-md);">
+                        <label class="form-label" for="fb-message">Data / Logs / Experience</label>
+                        <textarea id="fb-message" class="form-control" rows="5" placeholder="Report on your platform experience..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="fb-btn" style="width: 100%;">
+                        <span class="btn-text">Transmit Feedback</span>
+                        <span class="loader hidden" id="fb-loader"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-lg">
+        <div class="container flex-between" style="flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+                <a href="index.html" class="logo" style="margin-bottom: 0.5rem;">
+                    <span class="logo-icon">V</span> Vanguard AI
+                </a>
+                <p class="text-muted text-sm border-0">Built for Elite Defence Aspirants &copy; 2026</p>
+            </div>
+            <div class="flex-center" style="gap: 1.5rem;">
+                <a href="features.html" class="text-muted text-sm hover-underline">Features</a>
+                <a href="about.html" class="text-muted text-sm hover-underline">About</a>
+                <a href="feedback.html" class="text-muted text-sm hover-underline">Contact</a>
+            </div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script src="js/feedback.js"></script>
+</body>
+</html>

@@ -103,8 +103,16 @@
                             <div class="panel-input-side">
                                 <form id="ca-form">
                                     <div class="form-group">
+                                        <label class="form-label" for="ca-topic">Topic / Focus Area</label>
+                                        <input type="text" id="ca-topic" class="form-control" placeholder="e.g. DRDO Indigenization, LAC Situation" required>
+                                    </div>
+                                    <div class="form-group">
                                         <label class="form-label" for="ca-date">Target Date</label>
-                                        <input type="date" id="ca-date" class="form-control" required>
+                                        <input type="date" id="ca-date" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="ca-count">Number of Items</label>
+                                        <input type="number" id="ca-count" class="form-control" value="3" min="1" max="10" required>
                                     </div>
                                     <div class="form-group mb-md">
                                         <label class="form-label" for="ca-depth">Extraction Depth</label>
@@ -239,6 +247,8 @@
 
     <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/prompt-engine.js"></script>
+    <script src="js/validator.js"></script>
     <script src="js/api.js"></script>
     <script src="js/features.js"></script>
 </body>

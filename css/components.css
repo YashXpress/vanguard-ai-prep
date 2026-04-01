@@ -137,7 +137,8 @@
 }
 
 /* AI Output Console (Terminal Style) */
-.output-area { background-color: rgba(0,0,0,0.3); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: var(--space-md); flex: 1; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; font-family: var(--font-mono); color: var(--color-text); position: relative; box-shadow: inset 0 4px 15px rgba(0,0,0,0.2); }
+.output-area { background-color: rgba(0,0,0,0.3); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: var(--space-md); flex: 1; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; font-family: var(--font-mono); color: var(--color-text); position: relative; box-shadow: inset 0 4px 15px rgba(0,0,0,0.2); height: auto; min-height: 200px; }
+p { word-wrap: break-word; white-space: normal; }
 .output-area.active-processing { border-color: var(--color-border-active); box-shadow: inset 0 4px 15px rgba(0,0,0,0.2), 0 0 10px var(--color-primary-glow-subtle); }
 .output-area.empty { justify-content: center; align-items: center; color: rgba(100, 116, 139, 0.5); }
 
@@ -186,7 +187,7 @@ pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; line-height: 1.6;
 .utility-btns { display: flex; gap: 8px; }
 
 /* Structured Output UI */
-.output-card { background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-md); position: relative; overflow: hidden; }
+.output-card { background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: var(--space-sm) var(--space-md); margin-bottom: var(--space-md); position: relative; overflow: visible; height: auto; page-break-inside: avoid; break-inside: avoid; }
 .output-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--color-primary); }
 .output-headline { font-size: 1.1rem; color: var(--color-text); margin-bottom: var(--space-xs); line-height: 1.4; display: flex; justify-content: space-between; }
 .output-meta { font-size: 0.75rem; color: var(--color-primary); font-family: var(--font-mono); display: block; margin-bottom: var(--space-xs); text-transform: uppercase; letter-spacing: 1px; }
@@ -214,3 +215,141 @@ pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; line-height: 1.6;
   color: #1e293b;
   background: rgba(0, 0, 0, 0.05);
 }
+
+/* ============================================================
+   VANGUARD AI — PROMPT ENGINE & VALIDATION LAYER STYLES
+   ============================================================ */
+
+/* Count / Status Badge in output meta */
+.output-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(34, 197, 94, 0.12);
+    color: var(--color-success);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.output-count-badge.warn {
+    background: rgba(250, 204, 21, 0.1);
+    color: var(--color-warning);
+    border-color: rgba(250, 204, 21, 0.3);
+}
+
+/* Day Plan Timeline Cards */
+.plan-day-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-xs);
+    background: rgba(0,0,0,0.08);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+.plan-day-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-primary);
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+}
+.plan-day-card:hover {
+    border-color: var(--color-primary);
+    background: rgba(34, 211, 238, 0.02);
+    transform: translateX(2px);
+}
+.plan-day-card:hover::before {
+    opacity: 1;
+}
+
+/* Validation Error Card */
+.validation-error-card {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-left: 4px solid var(--color-error);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+}
+
+/* Text utilities for engine layer */
+.text-xs { font-size: 0.72rem; }
+.text-md { font-size: 1.1rem; }
+.font-weight-700 { font-weight: 700; }
+.pb-sm { padding-bottom: var(--space-sm); }
+.pt-sm { padding-top: var(--space-sm); }
+.border-bottom { border-bottom: 1px solid var(--color-border); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+.mt-xs { margin-top: var(--space-xs); }
+.align-center { align-items: center; }
+
+/* Module label pills in MCQ output */
+.question-number-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* SSB Readiness verdict indicator */
+.verdict-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 6px;
+    background: var(--color-border);
+    overflow: hidden;
+}
+.verdict-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--gradient-primary);
+    animation: expand-bar 1s ease forwards;
+}
+@keyframes expand-bar {
+    from { width: 0%; }
+    to { width: var(--bar-width, 70%); }
+}
+
+/* Data flow status indicator in system bar */
+.flow-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--color-success);
+    text-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+    animation: pulse-opacity 2s ease-in-out infinite;
+}
+.flow-indicator::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-success);
+    box-shadow: 0 0 6px var(--color-success);
+    animation: pulse-slow 1.5s infinite;
+}
+

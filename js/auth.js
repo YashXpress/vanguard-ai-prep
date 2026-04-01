@@ -50,7 +50,7 @@ const Auth = {
         }
     },
 
-    // 8. Redirect Logic with Loading state
+    // 8. Redirect Logic with Loading state (Boot Sequence)
     redirectWithLoading(targetUrl, loaderContainerId, statusTextId, callback) {
         const loader = document.getElementById(loaderContainerId);
         const statusText = document.getElementById(statusTextId);
@@ -58,15 +58,29 @@ const Auth = {
         if (loader) {
             loader.style.display = 'flex';
         }
-        if (statusText) {
-            statusText.textContent = "Setting up your dashboard...";
-        }
+
+        const stages = [
+            "Setting up your AI dashboard...",
+            "Loading OLQ framework...",
+            "System Ready."
+        ];
+
+        let i = 0;
+        if (statusText) statusText.textContent = stages[0];
+
+        const interval = setInterval(() => {
+            i++;
+            if (i < stages.length) {
+                if(statusText) statusText.textContent = stages[i];
+            }
+        }, 500);
 
         // Simulate network latency & DB setup
         setTimeout(() => {
+            clearInterval(interval);
             if(callback) callback();
             window.location.href = targetUrl;
-        }, 1500);
+        }, 1500); // Wait until boot completes
     },
 
     // 9. Recommended Module Logic

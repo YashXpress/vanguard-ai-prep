@@ -21,9 +21,9 @@
     <div class="system-status-bar" id="sys-status-bar">
         <div class="status-indicator">
             <div class="status-dot"></div>
-            AI CORE: ONLINE
+            VANGUARD AI ENGINE v1.0
         </div>
-        <div id="top-bar-mode">ANALYSIS MODE: <span style="color: #fff">STANDBY</span></div>
+        <div id="top-bar-mode">SYS_STATE: <span>BEHAVIORAL ANALYSIS MODE: ACTIVE</span></div>
         <div>SYS_LATENCY: <span style="color:var(--color-success)">1.2MS</span></div>
     </div>
 
@@ -32,18 +32,46 @@
             <a href="index.html" class="logo">
                 <span class="logo-icon">V</span> Vanguard AI
             </a>
-            <div class="flex-center" style="gap: 2rem;">
-                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">☀️</button>
-                <div class="flex-center" style="gap: 0.5rem; border-left: 1px solid var(--color-border); padding-left: 1rem;">
-                    <button onclick="window.VanguardAuth.logout()" class="btn btn-outline btn-sm">Disconnect</button>
-                </div>
+            <div id="nav-container" class="flex-center" style="gap: 2rem;">
+                <!-- Dynamically injected via JS -->
             </div>
         </div>
     </header>
 
+    <!-- Mobile Nav -->
+    <nav class="nav-mobile" id="mobile-nav">
+        <!-- Dynamically injected via JS -->
+    </nav>
+
     <main class="min-h-screen" style="padding-bottom: var(--space-xl);">
         <div class="container" style="padding-top: var(--space-md);">
             <div id="user-welcome" class="user-welcome-section fade-in-section is-visible hidden">
+            </div>
+
+            <!-- Progression System Overview Card -->
+            <div id="progression-overview" class="card mb-lg fade-in-section hidden" style="padding: var(--space-md); transition-delay: 50ms;">
+                <div class="flex-between align-center mb-sm border-bottom pb-sm">
+                    <h4 style="margin:0;">Performance Matrix</h4>
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--color-success); border-color: rgba(16, 185, 129, 0.3); font-size: 0.9rem;">SSB Readiness: <span id="ssb-readiness-val">68%</span></span>
+                </div>
+                <div class="grid grid-4 text-center">
+                    <div>
+                        <div class="text-xs text-muted mb-xs" style="text-transform: uppercase;">Simulations Run</div>
+                        <div id="prog-count" class="text-md font-weight-700">0</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-muted mb-xs" style="text-transform: uppercase;">Dominant OLQ</div>
+                        <div id="prog-strong-olq" class="text-md font-weight-700 text-success">Evaluating...</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-muted mb-xs" style="text-transform: uppercase;">Vulnerable Area</div>
+                        <div id="prog-weak-olq" class="text-md font-weight-700 text-error">Evaluating...</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-muted mb-xs" style="text-transform: uppercase;">Current Trajectory</div>
+                        <div id="prog-trend" class="text-md font-weight-700 text-warning">Neutral</div>
+                    </div>
+                </div>
             </div>
 
             <div class="dashboard-layout fade-in-section" style="transition-delay: 100ms;">
@@ -89,7 +117,7 @@
                             </div>
                             <div class="panel-output-side" id="ca-output-container">
                                 <label class="form-label text-accent font-weight-600">Console Output</label>
-                                <div id="ca-output" class="output-area empty"><span class="text-muted">Awaiting parameters...</span></div>
+                                <div id="ca-output" class="output-area empty"><span class="text-muted"><span style="font-size:1.2rem; vertical-align:middle; margin-right:4px;">👆</span> Start your preparation by selecting a target module.</span></div>
                             </div>
                         </div>
                     </div>
@@ -122,7 +150,7 @@
                             </div>
                             <div class="panel-output-side" id="mcq-output-container">
                                 <label class="form-label text-accent font-weight-600">Console Output</label>
-                                <div id="mcq-output" class="output-area empty"><span class="text-muted">Awaiting parameters...</span></div>
+                                <div id="mcq-output" class="output-area empty"><span class="text-muted"><span style="font-size:1.2rem; vertical-align:middle; margin-right:4px;">👆</span> Start your preparation by selecting a target module.</span></div>
                             </div>
                         </div>
                     </div>
@@ -150,19 +178,19 @@
                                         <p class="text-sm"><strong>Avoid:</strong> <span id="ssb-mode-avoid" class="text-error" style="color: var(--color-error);"></span></p>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" style="color: var(--color-warning);">Current Directive / Scenario</label>
-                                        <div id="ssb-question-display" class="card mb-sm" style="background: var(--color-bg); font-weight: 600; font-size: 1rem; border-color: rgba(245, 158, 11, 0.5); word-wrap: break-word;"></div>
+                                        <label class="form-label">Current Directive / Scenario</label>
+                                        <div id="ssb-question-display" class="card mb-sm" style="background: var(--color-bg); font-weight: 600; font-size: 1rem; word-wrap: break-word;"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="ssb-answer">Candidate Response</label>
                                         <textarea id="ssb-answer" class="form-control" rows="4" placeholder="Speak your mind clearly..." required></textarea>
                                     </div>
-                                    <button type="submit" id="ssb-submit-btn" class="btn btn-outline" style="width: 100%; border-color: var(--color-warning); color: var(--color-warning);">Submit Response</button>
+                                    <button type="submit" id="ssb-submit-btn" class="btn btn-primary" style="width: 100%;">Submit Response</button>
                                 </form>
                             </div>
                             <div class="panel-output-side" id="ssb-output-container">
                                 <label class="form-label text-accent font-weight-600">Console Output</label>
-                                <div id="ssb-output" class="output-area empty"><span class="text-muted">Awaiting connection...</span></div>
+                                <div id="ssb-output" class="output-area empty"><span class="text-muted"><span style="font-size:1.2rem; vertical-align:middle; margin-right:4px;">👆</span> Start your preparation by selecting a target module.</span></div>
                             </div>
                         </div>
                     </div>
@@ -198,7 +226,7 @@
                             </div>
                             <div class="panel-output-side" id="plan-output-container">
                                 <label class="form-label text-accent font-weight-600">Console Output</label>
-                                <div id="plan-output" class="output-area empty"><span class="text-muted">Awaiting parameters...</span></div>
+                                <div id="plan-output" class="output-area empty"><span class="text-muted"><span style="font-size:1.2rem; vertical-align:middle; margin-right:4px;">👆</span> Start your preparation by selecting a target module.</span></div>
                             </div>
                         </div>
                     </div>

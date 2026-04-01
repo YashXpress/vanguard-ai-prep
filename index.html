@@ -24,7 +24,7 @@
             <div class="status-dot"></div>
             AI CORE: ONLINE
         </div>
-        <div id="top-bar-mode">SYS_STATE: <span style="color: #fff">PUBLIC FACING</span></div>
+        <div id="top-bar-mode">SYS_STATE: <span>PUBLIC FACING</span></div>
         <div>SYS_LATENCY: <span style="color:var(--color-success)">1.1MS</span></div>
     </div>
 
@@ -33,29 +33,15 @@
             <a href="index.html" class="logo">
                 <span class="logo-icon">V</span> Vanguard AI
             </a>
-            <div class="flex-center" style="gap: 2rem;">
-                <nav class="nav-links">
-                    <a href="index.html" class="active">Home</a>
-                    <a href="#" onclick="openAuthModal('login')">Dashboard</a>
-                    <a href="#features">Features</a>
-                </nav>
-                <div class="flex-center" style="gap: 1rem;">
-                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">☀️</button>
-                    <button onclick="openAuthModal('login')" class="btn btn-outline btn-sm">Login</button>
-                    <button onclick="openAuthModal('signup')" class="btn btn-primary btn-sm">Sign Up</button>
-                    <button class="menu-toggle" aria-label="Toggle menu" id="mobile-menu-btn">
-                        <span></span><span></span><span></span>
-                    </button>
-                </div>
+            <div id="nav-container" class="flex-center" style="gap: 2rem;">
+                <!-- Dynamically injected via JS -->
             </div>
         </div>
     </header>
 
     <!-- Mobile Nav -->
     <nav class="nav-mobile" id="mobile-nav">
-        <a href="index.html" class="active">Home</a>
-        <a href="#features">Features</a>
-        <button onclick="openAuthModal('login')" class="btn btn-outline mt-sm text-center">Login</button>
+        <!-- Dynamically injected via JS -->
     </nav>
 
     <!-- AUTHENTICATION & ONBOARDING MODALS -->
@@ -176,20 +162,21 @@
             <div class="hero-glow"></div>
             <div class="container text-center fade-in-section">
                 <!-- Trust & Credibility -->
-                <div class="trust-line fade-in-section">Used by 1,000+ Elite Aspirants</div>
+                <div class="badge-trust fade-in-section">
+                    ⭐ Used by 1,000+ Elite Aspirants
+                </div>
                 
                 <h1 class="hero-title fade-in-section" style="transition-delay: 100ms;">
-                    AI-Powered Precision.<br>
-                    <span class="text-gradient">Accelerate Your Selection.</span>
+                    Crack SSB with AI Precision
                 </h1>
                 
                 <p class="hero-subtitle fade-in-section" style="transition-delay: 200ms;">
-                    The most advanced, structured intelligence dashboard for Defence Prep. Designed specifically for NDA, CDS, AFCAT & SSB preparation explicitly based on structured OLQ evaluation frameworks.
+                    Structured preparation based on Officer Like Qualities (OLQs)
                 </p>
                 
                 <div class="fade-in-section" style="transition-delay: 300ms; margin-bottom: var(--space-xl); display: flex; gap: 1rem; justify-content: center;">
-                    <button onclick="openAuthModal('signup')" class="btn btn-primary btn-lg">Launch Dashboard &rarr;</button>
-                    <a href="#features" class="btn btn-outline btn-lg">Explore Modules</a>
+                    <button onclick="handleHeroCTA()" class="btn btn-primary btn-lg" style="letter-spacing: 1px; text-transform: uppercase;">Initialize Dashboard &rarr;</button>
+                    <a href="#features" class="btn btn-outline btn-lg">View Intelligence Modules</a>
                 </div>
             </div>
         </section>
@@ -204,26 +191,26 @@
                     </div>
                 </div>
 
-                <div class="grid grid-4 fade-in-section">
-                    <div class="card card-hover" onclick="openAuthModal('login')">
+                <div class="grid grid-4 text-left">
+                    <div class="card card-hover fade-in-section" style="transition-delay: 0ms;" onclick="openAuthModal('login')">
                         <div class="icon-wrapper module-icon mb-sm">📰</div>
                         <h3>Current Affairs <span class="badge badge-beta">AI</span></h3>
                         <p class="text-muted text-sm mt-sm">Fetch structured defense summaries and potential MCQs based on exact dates using semantic extraction.</p>
                     </div>
                     
-                    <div class="card card-hover" onclick="openAuthModal('login')">
+                    <div class="card card-hover fade-in-section" style="transition-delay: 100ms;" onclick="openAuthModal('login')">
                         <div class="icon-wrapper module-icon mb-sm">🎯</div>
                         <h3>MCQ Generator <span class="badge badge-beta">AI</span></h3>
                         <p class="text-muted text-sm mt-sm">Endless, deterministic practice for UPSC exams explicitly tailored to specific syllabus topography.</p>
                     </div>
                     
-                    <div class="card card-hover" onclick="openAuthModal('login')">
+                    <div class="card card-hover fade-in-section" style="transition-delay: 200ms;" onclick="openAuthModal('login')">
                         <div class="icon-wrapper module-icon mb-sm">🗣️</div>
                         <h3>SSB Simulation <span class="badge badge-beta">AI</span></h3>
                         <p class="text-muted text-sm mt-sm">Realistic IO-trained model that evaluates your assessment responses in real-time with OLQ mapping.</p>
                     </div>
                     
-                    <div class="card card-hover" onclick="openAuthModal('login')">
+                    <div class="card card-hover fade-in-section" style="transition-delay: 300ms;" onclick="openAuthModal('login')">
                         <div class="icon-wrapper module-icon mb-sm">📅</div>
                         <h3>Study Planner</h3>
                         <p class="text-muted text-sm mt-sm">Adaptive scheduling algorithm compiling structured timelines based on availability.</p>
@@ -239,13 +226,13 @@
                     <h2 class="section-title">Verified Aspirant Feedback</h2>
                     <p class="text-muted">Direct telemetry from successfully cleared candidates.</p>
                 </div>
-                <div class="grid grid-2 text-left">
-                    <div class="card border-top">
+                <div class="grid grid-2 text-left" style="overflow-x: hidden;">
+                    <div class="card border-top slide-in-left" style="transition-delay: 0ms;">
                         <div style="color: var(--color-warning); font-size: 1.2rem; margin-bottom: 0.5rem;">★★★★★</div>
                         <p class="text-muted" style="font-size: 1rem; font-style: italic; margin-bottom: 1rem;">"The SSB simulation feels incredibly real. Getting immediate feedback on my responses mapped against OLQs completely changed my psychological preparation setup."</p>
                         <p class="text-text font-weight-600">- Vikram S., NDA Merit In</p>
                     </div>
-                    <div class="card border-top">
+                    <div class="card border-top slide-in-right" style="transition-delay: 150ms;">
                         <div style="color: var(--color-warning); font-size: 1.2rem; margin-bottom: 0.5rem;">★★★★★</div>
                         <p class="text-muted" style="font-size: 1rem; font-style: italic; margin-bottom: 1rem;">"Finally, a structured intelligence planner that adapts to my schedule. The AI generated current affairs hit the exact depth required for my upcoming examinations."</p>
                         <p class="text-text font-weight-600">- Anjali R., CDS Candidate</p>
@@ -256,7 +243,7 @@
         
         <!-- Final CTA -->
         <section class="section text-center">
-            <div class="container fade-in-section card" style="padding: var(--space-xl) var(--space-sm); border: 1px solid var(--color-border); background: var(--color-primary-light);">
+            <div class="container fade-in-section card" style="padding: var(--space-xl) var(--space-sm); border: 1px solid var(--color-border); background: var(--color-surface-light);">
                 <h2 class="section-title text-gradient" style="font-size: 2.5rem;">Secure Terminal Access</h2>
                 <p class="text-muted max-w-lg mx-auto mb-md">Initialize your profile and sync your preparation with military-grade precision.</p>
                 <div>
@@ -284,26 +271,7 @@
 
     <script src="js/auth.js"></script>
     <script>
-        // Modal & Navigation Logic specifically for landing page setup
-        // Uses Auth controller from auth.js
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if user is already logged in, change CTA buttons if so
-            const user = window.VanguardAuth.getUser();
-            if(user) {
-                // Adjust navbar
-                const dashLinks = document.querySelectorAll('a[onclick*="openAuthModal"], button[onclick*="openAuthModal"]');
-                dashLinks.forEach(link => {
-                    link.onclick = null;
-                    if(link.tagName === 'A') {
-                        link.href = 'features.html';
-                        if(link.textContent.includes('Dashboard')) link.textContent = 'Enter System';
-                    } else if(link.tagName === 'BUTTON') {
-                        link.onclick = () => window.location.href = 'features.html';
-                        link.textContent = 'Enter Dashboard';
-                    }
-                });
-            }
-        });
+        // Modal & Navigation Logic handled globally via auth.js and main.js
 
         const overlay = document.getElementById('auth-overlay');
         const loginModal = document.getElementById('login-modal');

@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!welcomeEl) return;
         
         const rec = window.VanguardAuth.getRecommendation(user);
+        const lastModText = user.lastModule ? user.lastModule.replace('module-', '').toUpperCase() : 'N/A';
+        const focusAreaText = user.weakArea || 'Pending Analysis';
         
         welcomeEl.classList.remove('hidden');
         welcomeEl.innerHTML = `
@@ -22,26 +24,76 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 style="margin-bottom: 0.2rem; display: flex; align-items: center; gap: 8px;">
                     Welcome back, ${user.name} <span class="status-dot tooltip" style="width: 6px; height: 6px;" title="Online"></span>
                 </h3>
-                <div class="user-meta-tags mt-sm">
+                <div class="user-meta-tags mt-sm mb-xs">
                     <span class="tag target">Target: ${user.exam}</span>
-                    <span class="tag">Focus: ${user.goal}</span>
+                    <span class="tag">Goal: ${user.goal}</span>
                     <span class="tag">Level: ${user.level}</span>
                 </div>
+                <div class="user-meta-tags mt-sm pt-sm border-top" style="border-top-style: dashed;">
+                    <span class="text-xs text-muted" style="text-transform: uppercase;">Recent Activity: </span>
+                    <span class="tag" style="color: var(--color-warning); border-color: rgba(245, 158, 11, 0.3);">Last Module: ${lastModText}</span>
+                    <span class="tag" style="color: var(--color-error); border-color: rgba(239, 68, 68, 0.3);">Focus Area: ${focusAreaText}</span>
+                </div>
             </div>
-            <div style="text-align: right; margin-top: 10px;">
+            <div style="text-align: right; margin-top: 10px; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 8px;">
                 ${user.lastModule ? 
-                  `<div class="text-sm text-muted mb-xs">Continue preparing:</div>
-                   <button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-target=\\'${user.lastModule}\\']').click()">Launch Last Module &rarr;</button>` 
-                  : 
-                  `<div class="text-sm text-muted mb-xs">Recommended for you:</div>
-                   <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-target=\\'${rec.id}\\']').click()">${rec.title} &rarr;</button>
-                   <div class="text-xs text-muted mt-xs" style="font-size: 0.65rem; max-width: 200px; margin-left: auto;">${rec.reason}</div>`
+                  `<button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-target=\\'${user.lastModule}\\']').click()"><span style="color:var(--color-warning);">⟲</span> Continue Last Activity</button>` 
+                  : ''
                 }
+                   <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-target=\\'${rec.id}\\']').click()">${rec.title} (Recommended)</button>
             </div>
         `;
     };
 
-    if(currentUser) setupPersonalization(currentUser);
+    const updateProgressionUI = () => {
+        const progCard = document.getElementById('progression-overview');
+        if(!progCard) return;
+        
+        const progData = JSON.parse(localStorage.getItem('vanguard_progression')) || null;
+        if(progData && progData.attempts > 0) {
+            progCard.classList.remove('hidden');
+            document.getElementById('prog-count').textContent = progData.attempts;
+            
+            // Dummy logic representing realistic tracking based on attempts
+            if(progData.attempts > 2) {
+                document.getElementById('ssb-readiness-val').textContent = '74%';
+                document.getElementById('prog-strong-olq').textContent = 'Reasoning Ability';
+                document.getElementById('prog-weak-olq').textContent = 'Resource Mgt';
+                document.getElementById('prog-trend').textContent = 'Improving';
+                document.getElementById('prog-trend').className = 'text-md font-weight-700 text-success';
+            } else {
+                document.getElementById('ssb-readiness-val').textContent = '61%';
+                document.getElementById('prog-strong-olq').textContent = 'Determination';
+                document.getElementById('prog-weak-olq').textContent = 'Effective Intel';
+                document.getElementById('prog-trend').textContent = 'Baseline';
+            }
+        }
+    };
+
+    if(currentUser) {
+        setupPersonalization(currentUser);
+        updateProgressionUI();
+
+        if (!localStorage.getItem('hasSeenIntro')) {
+            const introHTML = `
+              <div id="intro-modal" class="auth-overlay">
+                 <div class="auth-modal card fade-in-section is-visible text-center" style="max-width: 400px; padding: 2.5rem 2rem;">
+                    <h2 class="text-gradient mb-xs text-center" style="font-size: 2rem;">System Initialized</h2>
+                    <p class="text-muted mb-md">Start your training:</p>
+                    <div style="text-align: left; background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border); margin-bottom: 1.5rem;">
+                        <ol style="margin: 0; padding-left: 1.2rem; color: var(--color-text); line-height: 1.8;">
+                           <li>Run SSB Simulation</li>
+                           <li>Analyze OLQ feedback</li>
+                           <li>Improve weak areas</li>
+                        </ol>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('intro-modal').remove(); localStorage.setItem('hasSeenIntro', 'true');">Let's Go</button>
+                 </div>
+              </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', introHTML);
+        }
+    }
 
     // --- TOAST NOTIFICATIONS ---
     const showToast = (msg, type = 'success') => {
@@ -87,16 +139,32 @@ document.addEventListener('DOMContentLoaded', () => {
             bar.id = `${mod}-utility-bar`;
             bar.innerHTML = `
                 <div class="action-toggles">
-                    <button class="toggle-btn active" onclick="window.VanguardToggle('${mod}-output', 'clean')">Clean View</button>
-                    <button class="toggle-btn" onclick="window.VanguardToggle('${mod}-output', 'raw')">Raw JSON</button>
+                    <button class="toggle-btn active" onclick="window.VanguardToggle('${mod}-output', 'clean')">View Clean Output</button>
+                    <button class="toggle-btn" onclick="window.VanguardToggle('${mod}-output', 'raw')">View Raw Data</button>
                 </div>
                 <div class="utility-btns">
-                    <button class="btn btn-outline btn-sm" onclick="window.VanguardCopy('${mod}-output')">Copy</button>
-                    <button class="btn btn-primary btn-sm" onclick="window.VanguardPDF('${mod}-output', '${mod.toUpperCase()}')">Export PDF</button>
+                    <button class="btn btn-outline btn-sm" onclick="window.VanguardCopy('${mod}-output')">Copy Output</button>
+                    <button class="btn btn-primary btn-sm" onclick="window.VanguardPDF('${mod}-output', '${mod.toUpperCase()}')">Download PDF</button>
                 </div>
             `;
             // Insert before the output area
             container.insertBefore(bar, document.getElementById(`${mod}-output`));
+            
+            // Empty state Injection
+            const emptyEl = document.getElementById(`${mod}-output`);
+            if(emptyEl) {
+                emptyEl.innerHTML = `
+                    <div class="empty-state" style="text-align: center; margin: auto; padding: 2rem;">
+                        <h3 style="margin-bottom: 0.5rem; color: var(--color-text);">No activity yet</h3>
+                        <p class="text-muted" style="margin-bottom: 2rem;">Select a module to begin your preparation</p>
+                        <div style="display:flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-target=\\'module-ssb\\']').click()">Try SSB Simulation</button>
+                            <button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-target=\\'module-mcq\\']').click()">Generate MCQs</button>
+                            <button class="btn btn-outline btn-sm" onclick="document.querySelector('[data-target=\\'module-plan\\']').click()">Build Study Plan</button>
+                        </div>
+                    </div>
+                `;
+            }
         }
     };
     setupUtilityBars();
@@ -190,7 +258,11 @@ document.addEventListener('DOMContentLoaded', () => {
             payload.key_points.forEach(pt => html += `<span class="report-bullet report-text">${pt}</span>`);
             html += `</div>`;
             html += `<span class="report-heading">Strategic Importance</span>`;
-            html += `<div class="report-text text-muted" style="border-left: 2px solid var(--color-accent); padding-left: 10px;">${payload.why_it_matters}</div>`;
+            html += `<div class="report-text text-muted" style="border-left: 2px solid var(--color-primary); padding-left: 10px;">${payload.why_it_matters}</div>`;
+
+            if(payload.ssb_relevance) {
+                html += `<div class="report-text mt-sm" style="padding: 8px 0; border-top: 1px solid var(--color-border);"><strong>SSB / Interview Relevance:</strong> ${payload.ssb_relevance}</div>`;
+            }
             
             if(payload.mcqs && payload.mcqs.length > 0) {
                 html += `<span class="report-heading mt-sm">Potential MCQs</span>`;
@@ -201,14 +273,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         html += `<div>${k}: ${v}</div>`;
                     }
                     html += `<div class="correct-answer mt-xs">Correct: Option ${m.correct}</div>`;
-                    if(m.explanation) html += `<div class="text-sm text-muted"><strong>Exp:</strong> ${m.explanation}</div>`;
+                    if(m.explanation) html += `<div class="text-sm text-muted mt-xs"><strong>Exp:</strong> ${m.explanation}</div>`;
+                    if(m.why_others_wrong) html += `<div class="text-sm text-muted mt-xs"><strong>Why others are wrong:</strong> ${m.why_others_wrong}</div>`;
                     html += `</div>`;
                 });
             }
             html += `</div>`;
         } 
         else if (type === 'MCQ') {
-            html += `<div class="output-meta mb-sm">Topic: ${payload.topic} | Level: ${payload.difficulty}</div>`;
+            html += `<div class="output-meta mb-sm">Topic: ${payload.topic} | Difficulty Level: ${payload.difficulty}</div>`;
             payload.questions.forEach((q, idx) => {
                 html += `<div class="output-card">
                             <strong style="display:block; margin-bottom: 10px; font-size: 1.05rem;">Q${idx+1}: ${q.question}</strong>`;
@@ -222,15 +295,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 html += `<div class="evaluation-block" style="margin-top: 10px;">
                             <span class="report-heading" style="font-size: 0.85rem">Evaluator's Note</span>
-                            <div class="text-sm text-muted">${q.explanation}</div>
-                         </div>
-                         </div>`;
+                            <div class="text-sm text-muted mb-xs">${q.explanation}</div>`;
+                if(q.why_others_wrong) {
+                    html += `<div class="text-sm text-muted"><strong>Why others are wrong:</strong> ${q.why_others_wrong}</div>`;
+                }
+                html += `</div></div>`;
             });
+            const accLvl = payload.difficulty === 'Hard' ? 'Advanced' : (payload.difficulty === 'Standard' ? 'Intermediate' : 'Beginner');
+            html += `
+                <div class="evaluation-block mt-md fade-in-section" style="border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary); background: var(--color-bg); padding: 15px; border-radius: 4px;">
+                    <span class="report-heading" style="border-bottom:none; margin-bottom: 4px; color: var(--color-primary); text-transform: uppercase;">Evaluative Overview</span>
+                    <strong style="color: var(--color-text); font-size: 1.15rem;">Accuracy Level: ${accLvl}</strong>
+                </div>
+            `;
         }
         else if (type === 'SSB_EVAL') {
             const ev = payload.evaluation;
-            html += `<div class="output-card" style="border-color: var(--color-success);">
-                        <h4 class="text-gradient" style="margin-bottom: 15px;">Psychological Evaluation mapped</h4>`;
+            html += `<div class="output-card" style="border-color: var(--color-surface-lighter);">
+                        <div class="flex-between align-center mb-sm">
+                            <h4 class="text-gradient" style="margin: 0; font-size: 1.3rem;">Psychological Assessment</h4>
+                            ${ev.final_judgment ? `<span class="badge" style="background: rgba(0, 119, 255, 0.1); color: var(--color-primary); font-weight: 700;">AI Confidence: ${ev.final_judgment.ai_confidence}</span>` : ''}
+                        </div>`;
             
             // OLQs
             html += `<div style="margin-bottom: 15px;">`;
@@ -240,25 +325,61 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             html += `</div>`;
 
+            // Behavioral Insight (Memory / Progression text)
+            if(ev.behavioral_insight) {
+                html += `<div class="mb-sm text-sm" style="padding: 8px 0; border-bottom: 1px solid var(--color-border);">
+                            <strong style="display:block; margin-bottom: 2px;">Behavioral Insight Formulated:</strong>
+                            ${ev.behavioral_insight}
+                         </div>`;
+            }
+
             // S / W
             html += `<div class="grid grid-2" style="gap: 15px; margin-bottom: 15px;">
-                        <div style="background: rgba(16, 185, 129, 0.05); padding: 10px; border-left: 2px solid var(--color-success);">
-                            <strong class="text-success text-sm" style="display:block; margin-bottom: 5px; text-transform:uppercase;">Strengths</strong>
+                        <div style="padding: 10px; border-left: 2px solid var(--color-success);">
+                            <strong style="display:block; margin-bottom: 5px; text-transform:uppercase;">Strengths</strong>
                             <ul style="padding-left: 15px; margin: 0; font-size: 0.85rem;" class="text-muted">
                                 ${ev.strengths.map(s => `<li>${s}</li>`).join('')}
                             </ul>
                         </div>
-                        <div style="background: rgba(239, 68, 68, 0.05); padding: 10px; border-left: 2px solid var(--color-error);">
-                            <strong class="text-error text-sm" style="display:block; margin-bottom: 5px; text-transform:uppercase;">Weaknesses</strong>
+                        <div style="padding: 10px; border-left: 2px solid var(--color-error);">
+                            <strong style="display:block; margin-bottom: 5px; text-transform:uppercase;">Weaknesses</strong>
                             <ul style="padding-left: 15px; margin: 0; font-size: 0.85rem;" class="text-muted">
                                 ${ev.weaknesses.map(w => `<li>${w}</li>`).join('')}
                             </ul>
                         </div>
-                    </div>`;
+                     </div>`;
             
+            // Final Judgment Block
+            if(ev.final_judgment) {
+                const fj = ev.final_judgment;
+                let readinessLabel, readinessColor;
+                if(fj.readiness === 'High') {
+                    readinessLabel = "Recommended";
+                    readinessColor = "var(--color-success)";
+                } else if(fj.readiness === 'Moderate') {
+                    readinessLabel = "Needs Improvement";
+                    readinessColor = "var(--color-warning)";
+                } else {
+                    readinessLabel = "Not Ready";
+                    readinessColor = "var(--color-error)";
+                }
+
+                html += `<div class="evaluation-block fade-in-section mt-sm" style="border: 1px solid var(--color-border); border-left: 4px solid ${readinessColor}; background: var(--color-bg); padding: 15px; border-radius: 4px;">
+                            <span class="report-heading" style="text-transform: uppercase; color: ${readinessColor}; border-bottom: none; margin-bottom: 8px; font-size: 1.15rem;">Final Verdict: ${readinessLabel}</span>
+                            <div class="grid grid-2" style="margin-bottom: 15px;">
+                                <div><span class="text-muted text-sm">AI Confidence:</span> <strong style="color: ${readinessColor};">${fj.ai_confidence || 'N/A'}</strong></div>
+                                <div><span class="text-muted text-sm">Risk Factor:</span> <strong>${fj.risk_factor}</strong></div>
+                            </div>
+                            <div style="padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                <span class="text-muted text-sm" style="display:block;">Required Action:</span>
+                                <strong class="text-text">${fj.action}</strong>
+                            </div>
+                         </div>`;
+            }
+
             // Improvement
-            html += `<div class="evaluation-block">
-                        <span class="report-heading text-accent">Structural Improvement</span>
+            html += `<div class="evaluation-block mt-sm">
+                        <span class="report-heading text-accent">Structural Improvement Reference</span>
                         <div class="text-sm">"${ev.improved_answer}"</div>
                      </div>
                      </div>`;
@@ -271,6 +392,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="evaluation-block">
                             <span class="report-heading">Core Strategy</span>
                             <p class="text-muted text-sm">${payload.strategy}</p>
+                            ${payload.focus_area ? `<div class="mt-sm"><strong class="text-warning text-sm">Focus Area:</strong> <span class="text-muted text-sm">${payload.focus_area}</span></div>` : ''}
+                            ${payload.expected_outcome ? `<div class="mt-xs"><strong class="text-success text-sm">Expected Outcome:</strong> <span class="text-muted text-sm">${payload.expected_outcome}</span></div>` : ''}
                         </div>
                         
                         <span class="report-heading mt-sm mb-sm">Daily Schedule Iteration</span>
@@ -278,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             payload.daily_schedule.forEach(block => {
                 html += `<div class="plan-day-card">
-                            <strong style="color:var(--color-accent); font-size: 0.9rem; margin-bottom: 4px; display:block;">${block.block} (${block.duration})</strong>
+                            <strong style="color:var(--color-primary); font-size: 0.9rem; margin-bottom: 4px; display:block;">${block.block} (${block.duration})</strong>
                             <ul style="padding-left: 15px; margin: 0; font-size: 0.8rem;" class="text-muted">
                                 ${block.tasks.map(t => `<li>${t}</li>`).join('')}
                             </ul>
@@ -315,6 +438,12 @@ document.addEventListener('DOMContentLoaded', () => {
             el.innerHTML = formatJSON(dataObj);
         } else {
             el.innerHTML = generateCleanHTML(dataObj);
+        }
+
+        // Re-observe dynamic content
+        if(window.VanguardObserver) {
+            const newAnimated = el.querySelectorAll('.fade-in-section:not(.is-visible), .slide-in-left:not(.is-visible), .slide-in-right:not(.is-visible)');
+            newAnimated.forEach(animEl => window.VanguardObserver.observe(animEl));
         }
     };
 
@@ -532,11 +661,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const outputEl = document.getElementById('ssb-output');
             outputEl.classList.add('active-processing');
             if(document.getElementById('ssb-utility-bar')) document.getElementById('ssb-utility-bar').classList.add('hidden');
-            outputEl.innerHTML = getLoadingHTML('Evaluating OLQs Pattern');
+            
+            outputEl.innerHTML = getLoadingHTML('AI is analysing your response');
             outputEl.classList.remove('empty');
+
+            const ssbStages = [
+                "AI is analysing your response...",
+                "Analyzing behavioral pattern...",
+                "Cross-referencing OLQ indicators..."
+            ];
+            let ssbStageI = 0;
+            const cycleInterval = setInterval(() => {
+                const textEl = outputEl.querySelector('.loader-text');
+                if(textEl) {
+                    ssbStageI = (ssbStageI + 1) % ssbStages.length;
+                    textEl.innerHTML = `${ssbStages[ssbStageI]}<span class="loader-dots"></span>`;
+                }
+            }, 800);
             
             try {
                 const res = await window.VanguardAPI.evaluateSSBAnswer(answer, ssbCurrentType, currentUser || {});
+                clearInterval(cycleInterval);
                 outputEl.classList.remove('active-processing');
                 renderOutput('ssb-output', res);
                 showToast('Response evaluated');
@@ -544,7 +689,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update UI Prompt for next phase
                 document.getElementById('ssb-question-display').textContent = res.data.evaluation.next_directive;
                 document.getElementById('ssb-answer').value = ''; 
+                
+                updateProgressionUI();
+
+                if(window.VanguardAuth && res.data.evaluation.weaknesses && res.data.evaluation.weaknesses.length > 0) {
+                    window.VanguardAuth.updatePreference('weakArea', res.data.evaluation.weaknesses[0]);
+                    setupPersonalization(window.VanguardAuth.getUser());
+                }
             } catch (err) {
+                clearInterval(cycleInterval);
                 outputEl.innerHTML = `<span style="color:var(--color-error)">Network Error</span>`;
             } finally {
                 toggleButtonState('ssb-submit-btn', false, 'Submit Response');
@@ -575,6 +728,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 outputEl.classList.remove('active-processing');
                 renderOutput('plan-output', res);
                 showToast('Strategy matrix compiled');
+
+                if (window.VanguardAuth && weak) {
+                    window.VanguardAuth.updatePreference('weakArea', weak);
+                    setupPersonalization(window.VanguardAuth.getUser());
+                }
             } catch (err) {
                 outputEl.innerHTML = `<span style="color:var(--color-error)">Network Error: ${err}</span>`;
             } finally {
